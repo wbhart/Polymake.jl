@@ -35,11 +35,11 @@ function cube(d)
    return icxx"""polymake::perl::Object x = polymake::call_function("cube",$d); return x;"""
 end
 
-function N_VERTICES(p)
-   return icxx"""return int($p.give("N_VERTICES"));"""
+function give_int(p,property)
+   return icxx"""return int($p.give(std::string{$property}));"""
 end
 
-export application, cube, N_VERTICES
+export application, cube, give_int
 
 end # module
 
