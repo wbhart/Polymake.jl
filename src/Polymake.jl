@@ -31,7 +31,15 @@ function application(x)
    icxx"""$pmmain->set_application(std::string{$x});"""
 end
 
-export application
+function cube(d)
+   return icxx"""polymake::perl::Object x = polymake::call_function("cube",$d); return x;"""
+end
+
+function give_int(p,property)
+   return icxx"""return int($p.give(std::string{$property}));"""
+end
+
+export application, cube, give_int
 
 end # module
 
