@@ -31,7 +31,15 @@ function application(x)
    icxx"""$pmmain->set_application(std::string{$x});"""
 end
 
-export application
+function cube(d)
+   return icxx"""polymake::perl::Object x = polymake::call_function("cube",$d); return x;"""
+end
+
+function N_VERTICES(p)
+   return icxx"""return int($p.give("N_VERTICES"));"""
+end
+
+export application, cube, N_VERTICES
 
 end # module
 
