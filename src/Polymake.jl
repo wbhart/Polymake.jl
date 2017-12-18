@@ -11,21 +11,27 @@ addHeaderDir(joinpath(prefix, "include"), kind = C_User)
 
 const libpolymake = joinpath(pkgdir, "local", "lib", "libpolymake")
 
+global pmmain
+
 function __init__()
    push!(Libdl.DL_LOAD_PATH, libdir)
 
    if is_linux()
-      Libdl.dlopen(libpolymake)
+      Libdl.dlopen(libpolymake,Libdl.RTLD_GLOBAL)
    end
 
    cxxinclude(joinpath("polymake/Main.h"), isAngled = false)
+   global pmmain = @cxxnew pm::perl::Main()
+   print(String(@cxx pmmain->greeting()))
+   icxx"""$pmmain->set_application(std::string{$("polytope")});"""
 end
 
-function init()
-   icxx"""using namespace polymake; Main* polymake_main = new Main();"""
-   #icxx"""using namespace polymake; greeting(2);"""
+
+function application(x)
+   icxx"""$pmmain->set_application(std::string{$x});"""
 end
 
-export init
+export application
 
 end # module
+
