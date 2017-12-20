@@ -13,6 +13,16 @@ const libpolymake = joinpath(pkgdir, "local", "lib", "libpolymake")
 
 global pmmain
 
+function include(file)
+   eval(Cxx.process_cxx_string("""
+   #pragma clang diagnostic push
+   #pragma clang diagnostic ignored "-Wlogical-op-parentheses"
+   #pragma clang diagnostic ignored "-Wshift-op-parentheses"
+   #include "polymake/$file"
+   #pragma clang diagnostic pop
+   """,true,false))
+end
+
 function __init__()
    push!(Libdl.DL_LOAD_PATH, libdir)
 
@@ -20,7 +30,7 @@ function __init__()
       Libdl.dlopen(libpolymake,Libdl.RTLD_GLOBAL)
    end
 
-   cxxinclude(joinpath("polymake/Main.h"), isAngled = false)
+   include("Main.h")
    global pmmain = @cxxnew pm::perl::Main()
    print(String(@cxx pmmain->greeting()))
    icxx"""$pmmain->set_application(std::string{$("polytope")});"""
